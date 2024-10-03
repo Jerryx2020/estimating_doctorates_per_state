@@ -16,26 +16,33 @@ library(readr)
 # Load the previously processed data of doctoral degree holders per state
 doctoral_data <- read_csv("data/analysis_data/doctoral_count_by_state.csv")
 
-#### Set known total for California ####
-# Known total number of respondents across all education levels in California
+#### Load the full dataset to calculate the actual total respondents per state ####
+# Assuming the full dataset is stored as 'data/raw_data/usa_00001.csv'
+full_data <- read_csv("data/raw_data/usa_00001.csv")
+
+#### Calculate actual totals for each state based on PERWT ####
+# Group by STATEICP and sum the PERWT values (adjusted for implied decimals) to get the actual total per state
+actual_totals <- full_data %>%
+  group_by(STATEICP) %>%
+  summarise(actual_total = sum(PERWT) / 100)  # Adjust for two implied decimal places
+
+#### Known total for California ####
 california_total <- 391171
 
-#### Calculate ratio for California ####
+#### Apply ratio estimators approach ####
 # Filter out non-state codes (83, 96, 97, 98, 99)
 doctoral_data <- doctoral_data %>%
   filter(!(STATEICP %in% c(83, 96, 97, 98, 99)))
 
-# Extract the number of doctoral degree holders in California (Code: 71)
+# Extract the number of doctoral degree holders in California
 california_doctoral <- doctoral_data %>% 
-  filter(STATEICP == 71) %>%  # Use code 71 for California
+  filter(STATEICP == 71) %>%  # California state code is 71
   pull(doctoral_count)
 
-# Check if the value is correct
-print(california_doctoral)
-
-#### Apply the ratio estimators approach ####
-# Use the ratio between the number of doctoral degree holders and the total respondents in California
+#### Combine actual totals with doctoral data ####
+# Join the actual total respondents to the doctoral data
 doctoral_data <- doctoral_data %>%
+  left_join(actual_totals, by = "STATEICP") %>%
   mutate(estimated_total = doctoral_count / california_doctoral * california_total)
 
 #### Save estimated totals ####
