@@ -46,8 +46,12 @@ The key variables used are:
 Data were processed to focus on respondents with a doctoral degree (EDUCD code: 116) and grouped by state to obtain counts of doctoral degree holders per state.
 - **PERWT**: Person-level weight to account for survey sampling.
 
+## Obtaining Data {#sec-obtaining-data}
+
+The data we are using comes from IPUMS USA [@citeIPUMS2022]. To begin, you must first register for an account and log in. Then, navigate to the SELECT DATA page to locate the samples and variables you need. Click on the blue SELECT SAMPLE tab, select the 2022 ACS only, and SUBMIT SAMPLE SELECTIONS. After choosing the sample, proceed to SELECT HARMONIZED VARIABLES. We need three specific variables: HOUSEHOLD -> GEOGRAPHIC -> STATEICP, PERSON -> DEMOGRAPHIC -> SEX, and PERSON -> EDUCATION -> EDUC. Once these are selected, click the VIEW CART tab and create a data extract. Change the data format to .csv and submit the extract. When it's ready, go to the MY DATA section, and click the green DOWNLOAD .CSV button. Finally, move the downloaded .csv file to the reflection folder.
+
 ## Methodology {#sec-methodology}
-We applied the Laplace ratio estimators approach to estimate the total number of respondents in each state. The ratio of doctoral degree holders to the total number of respondents in California (391,171) serves as the basis for calculating estimated totals in other states.
+The ratio estimators approach is a statistical technique used to estimate population totals or means based on known ratios derived from a sample. This method involves calculating the ratio of a specific characteristic (e.g., the number of doctoral degree holders) to the total population for a known subset (e.g., California). This ratio is then applied to other subsets to estimate totals, assuming that similar relationships hold across the entire population. It is particularly useful when the exact population size is unknown, but a sample provides proportional relationships that can be generalized. The ratio of doctoral degree holders to the total number of respondents in California (391,171) serves as the basis for calculating estimated totals in other states.
 
 The steps involved are:
 1. Filtering the dataset to focus on doctoral degree holders using the `EDUCD` variable.
@@ -86,7 +90,7 @@ ggplot(estimated_data, aes(x = estimated_total, y = actual_total)) +
 
 ```
 
-The plot above compares the estimated total respondents per state with the actual respondent numbers. The dashed red line represents a perfect match between estimates and actuals. Points that deviate from this line suggest differences in the ratio of doctoral degree holders to the general population across states.
+The plot above compares the estimated total respondents per state with the actual respondent numbers. The dashed red line represents a perfect match between estimates and actuals. Points that deviate from this line suggest differences in the ratio of doctoral degree holders to the general population across states. It is scaled using the `ggplot2` package [@citeGgplot2] `scales`.
 
 \newpage
 
