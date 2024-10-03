@@ -1,26 +1,87 @@
 ---
-title: "paper"
+title: "Estimating Doctoral Degree Holders Per State Using Ratio Estimators (2022 ACS Data)"
+author: 
+  - Jerry Xia, Jason Yang, Peter Fan
+thanks: "Code and data are available at: <https://github.com/Jerryx2020/estimating_doctorates_per_state>"
+date: today
+date-format: long
+abstract: "This paper utilizes the 2022 ACS IPUMS data to estimate the total number of respondents in each state based on the ratio of doctoral degree holders. Using California as a benchmark with 391,171 total respondents, we apply the Laplace ratio estimators approach to infer state-level totals and compare these estimates with the actual respondent numbers. The differences in estimates suggest possible variations in sample representation and other demographic factors."
 format: pdf
-editor: visual
+number-sections: true
+toc: true
+bibliography: references.bib
 ---
 
-## Quarto
-
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
-
-## Running Code
-
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
-
 ```{r}
-1 + 1
+#| include: false
+#| warning: false
+#| message: false
+
+library(tidyverse)
+library(ggplot2) 
 ```
 
-You can add options to executable code like this
+# Introduction
 
+This paper applies the Laplace ratio estimator to the 2022 ACS IPUMS data [@citeIPUMS2022] to estimate the total number of respondents per state based on the number of doctoral degree holders. The total number of respondents in California is known to be 391,171. Using the ratio of doctoral degree holders to total respondents in California, the same ratio is applied to estimate totals for other states. This approach helps understand the representation of doctoral degree holders and population variations across states.
+
+The R software environment [@citeR] and the `tidyverse` [@citeTidyverse] were used for data manipulation, and the `ggplot2` package [@citeGgplot2] was used to visualize the results. By comparing estimated and actual figures, the analysis explores discrepancies that may arise from demographic factors or sampling variability.
+
+This paper is structured as follows: @sec-data-overview provides an overview of the dataset and methodology, @sec-results presents key findings, and @sec-discussion discusses implications and potential refinements for the ratio estimators approach.
+# Data {#sec-data}
+
+## Overview {#sec-data-overview}
+
+The dataset used in this analysis is sourced from the 2022 American Community Survey (ACS) provided by IPUMS [@citeIPUMS2022]. The dataset contains individual-level data on respondents' education, gender, and state of residence, among other demographic factors.
+
+The key variables used are:
+
+- **STATEICP**: State identifier for each respondent.
+- **EDUCD**: Educational attainment, where doctoral degree holders are identified by a specific code (116).
+Data were processed to focus on respondents with a doctoral degree (EDUCD code: 116) and grouped by state to obtain counts of doctoral degree holders per state.
+
+## Methodology {#sec-methodology}
+We applied the Laplace ratio estimators approach to estimate the total number of respondents in each state. The ratio of doctoral degree holders to the total number of respondents in California (391,171) serves as the basis for calculating estimated totals in other states.
+
+The steps involved are:
+1. Filtering the dataset to focus on doctoral degree holders using the `EDUCD` variable.
+2. Computing the ratio: The ratio of doctoral degree holders in California is used to estimate totals for other states.
+3. Comparing estimates: The estimated totals are compared with actual respondent numbers to highlight differences.
+
+\newpage
+
+## Results {#sec-data-results}
 ```{r}
 #| echo: false
-2 * 2
+#| warning: false
+#| fig-cap: "Estimated vs. Actual Respondents by State"
+#| label: fig-estimate-vs-actual
+
+# Load the estimated data
+estimated_data <- read_csv("data/analysis_data/estimated_total_by_state.csv")
+
+# Plot: Estimated vs. Actual Respondents
+ggplot(estimated_data, aes(x = estimated_total, y = actual_total)) +
+  geom_point(color = "grey", size = 2, alpha = 0.7) +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "purple") +
+  labs(x = "Estimated Total Respondents",
+       y = "Actual Total Respondents",
+       title = "Estimated vs Actual Respondents by State") +
+  theme_minimal()
 ```
 
-The `echo: false` option disables the printing of code (only output is displayed).
+As shown in @fig-inspection-vs-infraction, the graph now excludes only inspections where "No Infraction" was recorded. The results show that establishments inspected more frequently tend to have higher counts of infractions. This positive correlation reflects findings from the literature that increased inspection frequency does not necessarily reduce violations but instead highlights pre-existing issues [@mdpi2023; @cdc2024]. 
+
+\newpage
+
+# Discussion {#sec-discussion}
+
+The results indicate that some states show larger discrepancies between the estimated and actual total respondents. These differences likely arise from variations in the proportion of doctoral degree holders across states. In some states, demographic factors such as urbanization, access to higher education, and population age distributions may result in over- or under-representation of doctoral degree holders.
+
+Additionally, sampling variability within the ACS data may contribute to the observed differences. States with smaller populations or fewer respondents with doctoral degrees may have less accurate estimates due to larger sampling error.
+
+Future refinements to the ratio estimators approach could involve incorporating additional demographic factors or using a more sophisticated weighting scheme to account for regional differences.
+
+\newpage
+
+# References {#sec-references}
