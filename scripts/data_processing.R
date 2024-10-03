@@ -5,7 +5,7 @@
 # Contact: Jerry.xia@mail.utoronto.ca
 # License: MIT
 # Pre-requisites: IPUMS 2022 ACS data in CSV format saved as 'usa_00001.csv' in the 'data/raw_data' folder
-# Any other information needed? Ensure that the necessary packages are installed, such as 'dplyr'
+# Any other information needed? Ensure that the necessary packages are installed, such as 'dplyr'# Check unique values in the 'EDUCD' column
 
 #### Workspace setup ####
 # Load required libraries
@@ -20,7 +20,7 @@ data <- read_csv("data/raw_data/usa_00001.csv", show_col_types = FALSE)
 #### Process data ####
 # Filter the data for respondents with a doctoral degree using the 'EDUCD' column
 doctoral_data <- data %>%
-  filter(EDUCD == "doctoral degree") %>%
+  filter(EDUCD == 116) %>%
   group_by(STATEICP) %>%
   summarise(doctoral_count = n())
 
