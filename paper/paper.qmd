@@ -1,7 +1,9 @@
 ---
 title: "Estimating Doctoral Degree Holders Per State Using Ratio Estimators (2022 ACS Data)"
 author: 
-  - Jerry Xia, Jason Yang, Peter Fan
+  - name: Jerry Xia
+  - name: Peter Fan
+  - name: Jason Yang
 thanks: "Code and data are available at: <https://github.com/Jerryx2020/estimating_doctorates_per_state>"
 date: today
 date-format: long
@@ -21,13 +23,16 @@ library(tidyverse)
 library(ggplot2) 
 ```
 
+\newpage
+
 # Introduction
 
 This paper applies the Laplace ratio estimator to the 2022 ACS IPUMS data [@citeIPUMS2022] to estimate the total number of respondents per state based on the number of doctoral degree holders. The total number of respondents in California is known to be 391,171. Using the ratio of doctoral degree holders to total respondents in California, the same ratio is applied to estimate totals for other states. This approach helps understand the representation of doctoral degree holders and population variations across states.
 
 The R software environment [@citeR] and the `tidyverse` [@citeTidyverse] were used for data manipulation, and the `ggplot2` package [@citeGgplot2] was used to visualize the results. By comparing estimated and actual figures, the analysis explores discrepancies that may arise from demographic factors or sampling variability.
 
-This paper is structured as follows: @sec-data-overview provides an overview of the dataset and methodology, @sec-results presents key findings, and @sec-discussion discusses implications and potential refinements for the ratio estimators approach.
+This paper is structured as follows: @sec-data-overview provides an overview of the dataset and methodology, @sec-data-results presents key findings, and @sec-discussion discusses implications and potential refinements for the ratio estimators approach.
+
 # Data {#sec-data}
 
 ## Overview {#sec-data-overview}
@@ -39,6 +44,7 @@ The key variables used are:
 - **STATEICP**: State identifier for each respondent.
 - **EDUCD**: Educational attainment, where doctoral degree holders are identified by a specific code (116).
 Data were processed to focus on respondents with a doctoral degree (EDUCD code: 116) and grouped by state to obtain counts of doctoral degree holders per state.
+- **PERWT**: Person-level weight to account for survey sampling.
 
 ## Methodology {#sec-methodology}
 We applied the Laplace ratio estimators approach to estimate the total number of respondents in each state. The ratio of doctoral degree holders to the total number of respondents in California (391,171) serves as the basis for calculating estimated totals in other states.
@@ -58,19 +64,29 @@ The steps involved are:
 #| label: fig-estimate-vs-actual
 
 # Load the estimated data
-estimated_data <- read_csv("data/analysis_data/estimated_total_by_state.csv")
+estimated_data <- read_csv("/Users/jerryxia/estimating_doctorates_per_state/data/analysis_data/estimated_total_by_state.csv")
 
-# Plot: Estimated vs. Actual Respondents
+# Load required library
+library(ggplot2)
+library(scales)  # For formatting the axis labels
+
+# Plot: Estimated vs. Actual Respondents with axis labels in thousands and centered title
 ggplot(estimated_data, aes(x = estimated_total, y = actual_total)) +
-  geom_point(color = "grey", size = 2, alpha = 0.7) +
-  geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "purple") +
-  labs(x = "Estimated Total Respondents",
-       y = "Actual Total Respondents",
+  geom_point(color = "purple", size = 3, alpha = 0.7) +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "darkgrey") +
+  labs(x = "Estimated Total Respondents (in thousands)",
+       y = "Actual Total Respondents (in thousands)",
        title = "Estimated vs Actual Respondents by State") +
-  theme_minimal()
+  scale_x_continuous(labels = scales::label_number(scale = 1e-3)) +  # Convert to thousands
+  scale_y_continuous(labels = scales::label_number(scale = 1e-3)) +  # Convert to thousands
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5)  # Center the title
+  )
+
 ```
 
-As shown in @fig-inspection-vs-infraction, the graph now excludes only inspections where "No Infraction" was recorded. The results show that establishments inspected more frequently tend to have higher counts of infractions. This positive correlation reflects findings from the literature that increased inspection frequency does not necessarily reduce violations but instead highlights pre-existing issues [@mdpi2023; @cdc2024]. 
+The plot above compares the estimated total respondents per state with the actual respondent numbers. The dashed red line represents a perfect match between estimates and actuals. Points that deviate from this line suggest differences in the ratio of doctoral degree holders to the general population across states.
 
 \newpage
 
