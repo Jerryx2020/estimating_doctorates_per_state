@@ -18,6 +18,6 @@ The structure of this Repository is as follows:
 
 ## LLM Usage Statement
 
-This project utilized ChatGPT for assistance with code suggestions, explanations, and refining data visualizations. Comments detailing the specific instances where language models were used have been included directly in the relevant code scripts, and a complete overview of the LLM usage is provided in `usage.txt` located in `other/llm`.
+This project utilized ChatGPT for assistance with code suggestions, explanations, and refining data visualizations. Comments detailing the specific instances where language models were used have been included directly in the relevant code scripts, and a complete overview of the LLM usage is provided in `usage.txt` located in `llm`.
 
 This project was completed primarily using R for data analysis, processing, and visualization. All necessary scripts, data, and references are included in the Repository to ensure reproducibility.
