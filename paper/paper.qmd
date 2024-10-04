@@ -90,7 +90,7 @@ ggplot(estimated_data, aes(x = estimated_total, y = actual_total)) +
 
 ```
 
-The plot above compares the estimated total respondents per state with the actual respondent numbers. The dashed red line represents a perfect match between estimates and actuals. Points that deviate from this line suggest differences in the ratio of doctoral degree holders to the general population across states. It is scaled using the `ggplot2` package [@citeGgplot2] `scales`.
+The plot above compares the estimated total respondents per state with the actual respondent numbers. The dashed dark grey line represents a perfect match between estimates and actuals. Points that deviate from this line suggest differences in the ratio of doctoral degree holders to the general population across states. It is scaled using the `ggplot2` package [@citeGgplot2] `scales`.
 
 \newpage
 
